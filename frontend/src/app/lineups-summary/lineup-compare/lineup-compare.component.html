@@ -1,0 +1,101 @@
+@let noun = lineupSize() === 1 ? 'players' : 'lineups';
+<div class="compare-header">
+  <h2>Compare {{ noun }}</h2>
+  @if (lineups().length) {
+    <button mat-button type="button" (click)="clear.emit()">Clear</button>
+  }
+</div>
+
+@if (!lineups().length) {
+  <div class="empty">
+    <mat-icon aria-hidden="true">compare_arrows</mat-icon>
+    <p>Select up to three {{ noun }} from the table or chart to see how they stack up against each other and the league.</p>
+  </div>
+} @else {
+  <ol class="lineup-list">
+    @for (lineup of lineups(); track lineupKey(lineup); let index = $index) {
+      <li>
+        <span class="letter" aria-hidden="true">{{ letters[index] }}</span>
+        <div class="lineup-info">
+          <div class="team">
+            <span class="swatch" [style.background]="teamColors()[lineup.team_id]"></span>
+            {{ lineup.team_name }}
+          </div>
+          <div class="names">
+            @for (player of lineup.players; track player.player_id) {
+              <span>{{ player.name }}</span>
+            }
+          </div>
+        </div>
+        <button
+          mat-icon-button
+          type="button"
+          class="remove"
+          [attr.aria-label]="'Remove ' + letters[index] + ' from comparison'"
+          (click)="remove.emit(lineupKey(lineup))"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </li>
+    }
+  </ol>
+
+  <section class="tracks" aria-label="Four factors against the league average">
+    <h3>Four factors vs league</h3>
+    <p class="hint">
+      <span class="tick-key"></span> league average ·
+      <span class="dot-key better"></span> better ·
+      <span class="dot-key worse"></span> worse
+    </p>
+    @for (track of tracks(); track track.metric.key) {
+      <div class="track-row">
+        <div class="track-label" [matTooltip]="track.metric.description">
+          {{ track.metric.label }}
+          <span class="muted">lg {{ track.leagueText }}</span>
+        </div>
+        <div class="track">
+          @if (track.leaguePosition) {
+            <span class="league-tick" [style.left]="track.leaguePosition"></span>
+          }
+          @for (dot of track.dots; track dot.letter) {
+            <span
+              class="track-dot"
+              [class]="dot.tone"
+              [style.left.%]="dot.percent"
+              [style.top]="'calc(50% + ' + dot.offset + 'px)'"
+              [matTooltip]="dot.letter + ': ' + dot.text"
+            >{{ dot.letter }}</span>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th scope="col"><span class="visually-hidden">Metric</span></th>
+        @for (lineup of lineups(); track lineupKey(lineup); let index = $index) {
+          <th scope="col"><span class="letter small">{{ letters[index] }}</span></th>
+        }
+        <th scope="col" class="league-col">League</th>
+      </tr>
+    </thead>
+    @for (section of sections(); track section.title) {
+      <tbody>
+        <tr class="section-row">
+          <th scope="rowgroup" [attr.colspan]="lineups().length + 2">{{ section.title }}</th>
+        </tr>
+        @for (row of section.rows; track row.metric.key) {
+          <tr>
+            <th scope="row" [matTooltip]="row.metric.description" matTooltipPosition="left">{{ row.metric.label }}</th>
+            @for (cell of row.cells; track $index) {
+              <td [style.background]="cell.tint" [class.best]="cell.best">{{ cell.text }}</td>
+            }
+            <td class="league-col">{{ row.leagueText }}</td>
+          </tr>
+        }
+      </tbody>
+    }
+  </table>
+}

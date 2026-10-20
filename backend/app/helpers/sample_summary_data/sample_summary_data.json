@@ -1,0 +1,263 @@
+[
+  {
+    "offensive_possessions": 118,
+    "offensive_points": 127,
+    "offensive_shot_attempts": 109,
+    "offensive_fg2_made": 38,
+    "offensive_fg2_attempted": 69,
+    "offensive_fg3_made": 14,
+    "offensive_fg3_attempted": 37,
+    "offensive_fg_made": 52,
+    "offensive_fg_attempted": 106,
+    "offensive_ft_made": 9,
+    "offensive_ft_attempted": 12,
+    "offensive_rebounds_offense": 8,
+    "offensive_rebounds_defense": 46,
+    "offensive_rebound_opportunities": 54,
+    "offensive_assists": 30,
+    "offensive_steals": 9,
+    "offensive_turnovers": 20,
+    "offensive_blocks": 4,
+    "offensive_offensive_fouls": 1,
+    "offensive_defensive_fouls": 12,
+    "offensive_shooting_fouls": 9,
+    "offensive_shot_attempt_points": 127,
+    "offensive_ft_potential_points": 12,
+    "offensive_transition_take_fouls": 0,
+    "defensive_possessions": 118,
+    "defensive_points": 118,
+    "defensive_shot_attempts": 126,
+    "defensive_fg2_made": 35,
+    "defensive_fg2_attempted": 81,
+    "defensive_fg3_made": 14,
+    "defensive_fg3_attempted": 41,
+    "defensive_fg_made": 49,
+    "defensive_fg_attempted": 122,
+    "defensive_ft_made": 6,
+    "defensive_ft_attempted": 10,
+    "defensive_rebounds_offense": 25,
+    "defensive_rebounds_defense": 48,
+    "defensive_rebound_opportunities": 73,
+    "defensive_assists": 28,
+    "defensive_steals": 15,
+    "defensive_turnovers": 21,
+    "defensive_blocks": 8,
+    "defensive_offensive_fouls": 2,
+    "defensive_defensive_fouls": 16,
+    "defensive_shooting_fouls": 6,
+    "defensive_shot_attempt_points": 118,
+    "defensive_ft_potential_points": 10,
+    "defensive_transition_take_fouls": 0,
+    "total_possessions": 236,
+    "offensive_fg_pct": 0.4906,
+    "offensive_fg2_pct": 0.5507,
+    "offensive_fg3_pct": 0.3784,
+    "defensive_fg_pct": 0.4016,
+    "defensive_fg2_pct": 0.4321,
+    "defensive_fg3_pct": 0.3415,
+    "team_id": "e6af322b-1b98-5b2f-9ed8-205a04d8ece4",
+    "player_ids": [
+      "28b7324d-a3de-50d3-b7b4-b13bc0360faf",
+      "723c7f09-f39b-59c0-bbdb-811049edbead",
+      "8ccb9aa4-6e55-58d4-84f8-d6f16cc5e1f1",
+      "95950313-61e1-536c-b009-bc7d84343863",
+      "ef7e3927-e9c9-5b36-a581-3ecb71200ab2"
+    ],
+    "players": [
+      {
+        "player_id": "28b7324d-a3de-50d3-b7b4-b13bc0360faf",
+        "name": "OWL #23"
+      },
+      {
+        "player_id": "723c7f09-f39b-59c0-bbdb-811049edbead",
+        "name": "OWL #63"
+      },
+      {
+        "player_id": "8ccb9aa4-6e55-58d4-84f8-d6f16cc5e1f1",
+        "name": "OWL #80"
+      },
+      {
+        "player_id": "95950313-61e1-536c-b009-bc7d84343863",
+        "name": "OWL #92"
+      },
+      {
+        "player_id": "ef7e3927-e9c9-5b36-a581-3ecb71200ab2",
+        "name": "OWL #04"
+      }
+    ]
+  },
+  {
+    "offensive_possessions": 109,
+    "offensive_points": 136,
+    "offensive_shot_attempts": 101,
+    "offensive_fg2_made": 36,
+    "offensive_fg2_attempted": 53,
+    "offensive_fg3_made": 18,
+    "offensive_fg3_attempted": 43,
+    "offensive_fg_made": 54,
+    "offensive_fg_attempted": 96,
+    "offensive_ft_made": 10,
+    "offensive_ft_attempted": 15,
+    "offensive_rebounds_offense": 10,
+    "offensive_rebounds_defense": 32,
+    "offensive_rebound_opportunities": 42,
+    "offensive_assists": 31,
+    "offensive_steals": 9,
+    "offensive_turnovers": 23,
+    "offensive_blocks": 2,
+    "offensive_offensive_fouls": 3,
+    "offensive_defensive_fouls": 16,
+    "offensive_shooting_fouls": 10,
+    "offensive_shot_attempt_points": 136,
+    "offensive_ft_potential_points": 15,
+    "offensive_transition_take_fouls": 0,
+    "defensive_possessions": 109,
+    "defensive_points": 147,
+    "defensive_shot_attempts": 118,
+    "defensive_fg2_made": 33,
+    "defensive_fg2_attempted": 69,
+    "defensive_fg3_made": 23,
+    "defensive_fg3_attempted": 42,
+    "defensive_fg_made": 56,
+    "defensive_fg_attempted": 111,
+    "defensive_ft_made": 12,
+    "defensive_ft_attempted": 19,
+    "defensive_rebounds_offense": 16,
+    "defensive_rebounds_defense": 39,
+    "defensive_rebound_opportunities": 55,
+    "defensive_assists": 40,
+    "defensive_steals": 5,
+    "defensive_turnovers": 14,
+    "defensive_blocks": 6,
+    "defensive_offensive_fouls": 2,
+    "defensive_defensive_fouls": 24,
+    "defensive_shooting_fouls": 12,
+    "defensive_shot_attempt_points": 147,
+    "defensive_ft_potential_points": 19,
+    "defensive_transition_take_fouls": 0,
+    "total_possessions": 218,
+    "offensive_fg_pct": 0.5625,
+    "offensive_fg2_pct": 0.6792,
+    "offensive_fg3_pct": 0.4186,
+    "defensive_fg_pct": 0.5045,
+    "defensive_fg2_pct": 0.4783,
+    "defensive_fg3_pct": 0.5476,
+    "team_id": "4e177948-c584-5427-be1f-c2c1bacc9683",
+    "player_ids": [
+      "47909b9e-e4e8-5db3-93aa-2eea772a5005",
+      "731ff5d1-7e79-5516-8ba3-10d8722cb488",
+      "7e35a976-4d29-59de-b647-9551c5a9811c",
+      "98bc6ed1-0d44-51bd-bc6d-e714fc72b8bf",
+      "b077eca5-ee2b-523b-b52b-fec8d4682e19"
+    ],
+    "players": [
+      {
+        "player_id": "47909b9e-e4e8-5db3-93aa-2eea772a5005",
+        "name": "MOO #26"
+      },
+      {
+        "player_id": "731ff5d1-7e79-5516-8ba3-10d8722cb488",
+        "name": "MOO #13"
+      },
+      {
+        "player_id": "7e35a976-4d29-59de-b647-9551c5a9811c",
+        "name": "MOO #73"
+      },
+      {
+        "player_id": "98bc6ed1-0d44-51bd-bc6d-e714fc72b8bf",
+        "name": "MOO #57"
+      },
+      {
+        "player_id": "b077eca5-ee2b-523b-b52b-fec8d4682e19",
+        "name": "MOO #55"
+      }
+    ]
+  },
+  {
+    "offensive_possessions": 106,
+    "offensive_points": 140,
+    "offensive_shot_attempts": 103,
+    "offensive_fg2_made": 46,
+    "offensive_fg2_attempted": 71,
+    "offensive_fg3_made": 15,
+    "offensive_fg3_attempted": 31,
+    "offensive_fg_made": 61,
+    "offensive_fg_attempted": 102,
+    "offensive_ft_made": 3,
+    "offensive_ft_attempted": 5,
+    "offensive_rebounds_offense": 8,
+    "offensive_rebounds_defense": 33,
+    "offensive_rebound_opportunities": 41,
+    "offensive_assists": 35,
+    "offensive_steals": 9,
+    "offensive_turnovers": 12,
+    "offensive_blocks": 7,
+    "offensive_offensive_fouls": 0,
+    "offensive_defensive_fouls": 9,
+    "offensive_shooting_fouls": 2,
+    "offensive_shot_attempt_points": 139,
+    "offensive_ft_potential_points": 5,
+    "offensive_transition_take_fouls": 0,
+    "defensive_possessions": 106,
+    "defensive_points": 142,
+    "defensive_shot_attempts": 102,
+    "defensive_fg2_made": 40,
+    "defensive_fg2_attempted": 66,
+    "defensive_fg3_made": 18,
+    "defensive_fg3_attempted": 34,
+    "defensive_fg_made": 58,
+    "defensive_fg_attempted": 100,
+    "defensive_ft_made": 8,
+    "defensive_ft_attempted": 11,
+    "defensive_rebounds_offense": 9,
+    "defensive_rebounds_defense": 33,
+    "defensive_rebound_opportunities": 42,
+    "defensive_assists": 33,
+    "defensive_steals": 8,
+    "defensive_turnovers": 15,
+    "defensive_blocks": 1,
+    "defensive_offensive_fouls": 1,
+    "defensive_defensive_fouls": 14,
+    "defensive_shooting_fouls": 7,
+    "defensive_shot_attempt_points": 141,
+    "defensive_ft_potential_points": 11,
+    "defensive_transition_take_fouls": 0,
+    "total_possessions": 212,
+    "offensive_fg_pct": 0.598,
+    "offensive_fg2_pct": 0.6479,
+    "offensive_fg3_pct": 0.4839,
+    "defensive_fg_pct": 0.58,
+    "defensive_fg2_pct": 0.6061,
+    "defensive_fg3_pct": 0.5294,
+    "team_id": "5d577c3a-c790-5e45-a299-6e369352865b",
+    "player_ids": [
+      "773cfacd-76c0-5d6c-ac41-468c3c1f3690",
+      "c5b3485f-7ee8-543d-ba56-652134ec5040",
+      "ce82dd02-7e1c-5518-b1c2-80724b1dbf97",
+      "ed33c986-3a50-512e-b1da-76a7e980411d",
+      "fbab3a9b-c1b1-5d44-851b-72da604a10b2"
+    ],
+    "players": [
+      {
+        "player_id": "773cfacd-76c0-5d6c-ac41-468c3c1f3690",
+        "name": "IBX #65"
+      },
+      {
+        "player_id": "c5b3485f-7ee8-543d-ba56-652134ec5040",
+        "name": "IBX #55"
+      },
+      {
+        "player_id": "ce82dd02-7e1c-5518-b1c2-80724b1dbf97",
+        "name": "IBX #67"
+      },
+      {
+        "player_id": "ed33c986-3a50-512e-b1da-76a7e980411d",
+        "name": "IBX #92"
+      },
+      {
+        "player_id": "fbab3a9b-c1b1-5d44-851b-72da604a10b2",
+        "name": "IBX #36"
+      }
+    ]
+  }
+]

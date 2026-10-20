@@ -1,0 +1,39 @@
+<section class="api-inspector">
+  <h1>Lineups Summary Responses</h1>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Endpoint</mat-label>
+    <mat-select [(ngModel)]="endpointPath" (selectionChange)="changeEndpoint()">
+      @for (option of endpoints; track option.path) {
+        <mat-option [value]="option.path">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (endpointPath === 'lineups') {
+    <mat-form-field appearance="outline">
+      <mat-label>Lineup size</mat-label>
+      <mat-select [(ngModel)]="leagueLineupSize" (selectionChange)="changeLeagueLineupSize()">
+        @for (lineupSize of lineupSizes; track lineupSize.value) {
+          <mat-option [value]="lineupSize.value">{{ lineupSize.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+
+  @if (endpoint.example) {
+    <mat-form-field appearance="outline" class="query-field">
+      <mat-label>Extra query params</mat-label>
+      <input
+        matInput
+        [(ngModel)]="extraQueryParams"
+        [placeholder]="endpoint.example"
+        (keydown.enter)="fetchLeagueApiResponse()"
+      />
+    </mat-form-field>
+    <button mat-flat-button type="button" (click)="fetchLeagueApiResponse()">Send</button>
+  }
+
+  <div>API response for {{ leagueEndpoint }}</div>
+  <pre>{{ leagueApiResponse }}</pre>
+</section>

@@ -1,0 +1,317 @@
+<div class="page">
+  <header class="page-header">
+    <div>
+      <h1>Lineup Explorer</h1>
+      <p class="subtitle">
+        How every combination of players has performed, possession by possession. Narrow it to a team, a matchup,
+        a stretch of games or a quarter, then pick up to three {{ noun() }} to compare.
+      </p>
+    </div>
+    <button mat-stroked-button type="button" (click)="exportCsv()" [disabled]="!lineups().length">
+      <mat-icon>download</mat-icon>
+      Export CSV
+    </button>
+  </header>
+
+  <section class="filters" aria-label="Filters">
+    <mat-button-toggle-group
+      class="size-toggle"
+      aria-label="Lineup size"
+      hideSingleSelectionIndicator
+      [value]="lineupSize()"
+      (change)="setLineupSize($event.value)"
+    >
+      @for (size of lineupSizes; track size.value) {
+        <mat-button-toggle [value]="size.value">{{ size.label }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Team</mat-label>
+      <mat-select [value]="teamId()" (valueChange)="setTeam($event)">
+        <mat-option [value]="null">All teams</mat-option>
+        @for (team of league()?.teams ?? []; track team.team_id) {
+          <mat-option [value]="team.team_id">
+            <span class="option-swatch" [style.background]="teamColors()[team.team_id]"></span>{{ team.name }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Opponent</mat-label>
+      <mat-select [value]="opponentTeamId()" (valueChange)="opponentTeamId.set($event)">
+        <mat-option [value]="null">Any opponent</mat-option>
+        @for (team of league()?.teams ?? []; track team.team_id) {
+          <mat-option [value]="team.team_id" [disabled]="team.team_id === teamId()">vs {{ team.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide-field">
+      <mat-label>With players</mat-label>
+      <mat-select multiple [value]="playerIds()" (valueChange)="playerIds.set($event)">
+        @for (team of withPlayerOptions(); track team.team_id) {
+          <mat-optgroup [label]="team.name">
+            @for (player of team.players; track player.player_id) {
+              <mat-option [value]="player.player_id">{{ player.name }}</mat-option>
+            }
+          </mat-optgroup>
+        }
+      </mat-select>
+      <mat-icon matSuffix class="field-hint" matTooltip="Only show lineups that include all of these players.">help_outline</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide-field">
+      <mat-label>Without players</mat-label>
+      <mat-select multiple [value]="withoutPlayerIds()" (valueChange)="withoutPlayerIds.set($event)">
+        @for (team of league()?.teams ?? []; track team.team_id) {
+          <mat-optgroup [label]="team.name">
+            @for (player of team.players; track player.player_id) {
+              <mat-option [value]="player.player_id">{{ player.name }}</mat-option>
+            }
+          </mat-optgroup>
+        }
+      </mat-select>
+      <mat-icon
+        matSuffix
+        class="field-hint"
+        matTooltip="Only count possessions where none of these players were on the floor, e.g. to plan around an injury."
+      >help_outline</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="wide-field">
+      <mat-label>Games</mat-label>
+      <mat-select multiple [value]="gameIds()" (valueChange)="gameIds.set($event)">
+        @for (game of gameOptions(); track game.id) {
+          <mat-option [value]="game.id">{{ game.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-button-toggle-group
+      multiple
+      aria-label="Quarters"
+      hideMultipleSelectionIndicator
+      [value]="periods()"
+      (change)="periods.set($event.value)"
+      matTooltip="Filter to specific quarters. Select none for the full game."
+    >
+      @for (period of league()?.periods ?? []; track period) {
+        <mat-button-toggle [value]="period">Q{{ period }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="narrow-field">
+      <mat-label>Min. possessions</mat-label>
+      <input
+        matInput
+        type="number"
+        min="0"
+        [value]="minPossessions()"
+        (input)="setMinPossessions($any($event.target).value)"
+      />
+    </mat-form-field>
+
+    <button mat-button type="button" (click)="resetFilters()" [disabled]="!activeFilterCount()">
+      Reset filters{{ activeFilterCount() ? ' (' + activeFilterCount() + ')' : '' }}
+    </button>
+  </section>
+
+  <mat-progress-bar class="progress" mode="indeterminate" [class.visible]="loading()" aria-hidden="true" />
+
+  @if (error(); as message) {
+    <div class="error" role="alert">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ message }}</span>
+      <button mat-button type="button" (click)="retry()">Retry</button>
+    </div>
+  }
+
+  @if (insights().length) {
+    <section class="insights" [class.refreshing]="loading()" [attr.aria-label]="'Headline ' + noun()">
+      @for (insight of insights(); track insight.label) {
+        <button
+          type="button"
+          class="insight"
+          [class.selected]="selectedKeys().includes(insight.key)"
+          [attr.aria-pressed]="selectedKeys().includes(insight.key)"
+          (click)="toggleLineup(insight.key)"
+        >
+          <span class="insight-label">{{ insight.label }}</span>
+          <span class="insight-value">
+            {{ insight.value }} <span class="insight-suffix">{{ insight.suffix }}</span>
+          </span>
+          <span class="insight-names" [title]="insight.names">{{ insight.names }}</span>
+          <span class="insight-team">
+            <span class="swatch" [style.background]="insight.teamColor"></span>{{ insight.teamName }}
+          </span>
+        </button>
+      }
+    </section>
+  }
+
+  <div class="workspace">
+    <section class="results" [class.refreshing]="loading()">
+      <div class="results-toolbar">
+        <mat-button-toggle-group
+          aria-label="View"
+          hideSingleSelectionIndicator
+          [value]="view()"
+          (change)="view.set($event.value)"
+        >
+          <mat-button-toggle value="table"><mat-icon>table_rows</mat-icon> Table</mat-button-toggle>
+          <mat-button-toggle value="chart"><mat-icon>scatter_plot</mat-icon> Chart</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        @if (view() === 'table') {
+          <mat-button-toggle-group
+            class="preset-toggle"
+            aria-label="Columns"
+            hideSingleSelectionIndicator
+            [value]="columnPresetId()"
+            (change)="columnPresetId.set($event.value)"
+          >
+            @for (preset of columnPresets; track preset.id) {
+              <mat-button-toggle [value]="preset.id">{{ preset.label }}</mat-button-toggle>
+            }
+          </mat-button-toggle-group>
+        } @else {
+          <mat-button-toggle-group
+            class="preset-toggle"
+            aria-label="Chart axes"
+            hideSingleSelectionIndicator
+            [value]="scatterPresetId()"
+            (change)="scatterPresetId.set($event.value)"
+          >
+            @for (preset of scatterPresets; track preset.id) {
+              <mat-button-toggle [value]="preset.id">{{ preset.label }}</mat-button-toggle>
+            }
+          </mat-button-toggle-group>
+        }
+      </div>
+
+      <div class="results-meta">
+        <span>
+          {{ lineups().length }} {{ noun() }}
+          @if (minPossessions()) {
+            with {{ minPossessions() }}+ possessions
+          }
+        </span>
+        @if (leagueStats(); as league) {
+          <span class="muted">
+            League: {{ formatMetric(league.offensive_rating, 'decimal') }} ORtg ·
+            {{ formatMetric(league.offensive_efg_pct, 'pct') }} eFG% ·
+            {{ formatMetric(league.pace, 'decimal') }} pace
+          </span>
+        }
+        @if (view() === 'table') {
+          <span class="legend">
+            <span class="legend-swatch better"></span> Better than league
+            <span class="legend-swatch worse"></span> Worse than league
+          </span>
+        } @else {
+          <span class="legend">
+            @for (team of league()?.teams ?? []; track team.team_id) {
+              <span class="legend-item">
+                <span class="swatch" [style.background]="teamColors()[team.team_id]"></span>{{ team.name }}
+              </span>
+            }
+            <span class="muted">· Size = possessions</span>
+          </span>
+        }
+      </div>
+
+      @if (!lineups().length && !loading() && !error()) {
+        <div class="empty">
+          <mat-icon aria-hidden="true">filter_alt_off</mat-icon>
+          <p>No {{ noun() }} match these filters.</p>
+          <button mat-stroked-button type="button" (click)="resetFilters()">Reset filters</button>
+        </div>
+      } @else if (view() === 'table') {
+        <div class="table-scroll">
+          <table class="lineups-table">
+            <thead>
+              <tr>
+                <th scope="col" class="lineup-col">{{ lineupSize() === 1 ? 'Player' : 'Lineup' }}</th>
+                @for (metric of columnPreset().metrics; track metric.key) {
+                  <th scope="col" [attr.aria-sort]="ariaSort(metric)">
+                    <button
+                      type="button"
+                      class="sort-button"
+                      [class.active]="sort().key === metric.key"
+                      [matTooltip]="metric.description"
+                      (click)="sortBy(metric)"
+                    >
+                      {{ metric.label }}
+                      <mat-icon class="sort-icon" aria-hidden="true">
+                        {{ sort().key === metric.key && sort().direction === 'asc' ? 'arrow_upward' : 'arrow_downward' }}
+                      </mat-icon>
+                    </button>
+                  </th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of tableRows(); track row.key) {
+                <tr [class.selected]="row.letter" (click)="toggleLineup(row.key)">
+                  <th scope="row" class="lineup-col">
+                    <div class="lineup-cell">
+                      <button
+                        type="button"
+                        class="select-marker"
+                        [attr.aria-pressed]="!!row.letter"
+                        [attr.aria-label]="(row.letter ? 'Remove from' : 'Add to') + ' comparison'"
+                        (click)="$event.stopPropagation(); toggleLineup(row.key)"
+                      >
+                        {{ row.letter ?? '' }}
+                      </button>
+                      <div class="lineup-text">
+                        <div class="names">
+                          @for (player of row.lineup.players; track player.player_id) {
+                            <span>{{ player.name }}</span>
+                          }
+                        </div>
+                        <div class="team">
+                          <span class="swatch" [style.background]="row.teamColor"></span>{{ row.lineup.team_name }}
+                        </div>
+                      </div>
+                    </div>
+                  </th>
+                  @for (cell of row.cells; track cell.key) {
+                    <td [style.background]="cell.tint">
+                      {{ cell.text }}
+                      @if (cell.bar) {
+                        <span class="volume-bar" [style.width]="cell.bar"></span>
+                      }
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else if (lineups().length) {
+        <lineup-scatter
+          [lineups]="lineups()"
+          [league]="leagueStats()"
+          [preset]="scatterPreset()"
+          [selectedKeys]="selectedKeys()"
+          [teamColors]="teamColors()"
+          (toggleLineup)="toggleLineup($event)"
+        />
+      }
+    </section>
+
+    <aside class="compare-panel" aria-label="Comparison">
+      <lineup-compare
+        [lineups]="selectedLineups()"
+        [league]="leagueStats()"
+        [teamColors]="teamColors()"
+        [lineupSize]="lineupSize()"
+        (remove)="removeLineup($event)"
+        (clear)="selectedKeys.set([])"
+      />
+    </aside>
+  </div>
+</div>

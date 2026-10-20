@@ -1,0 +1,118 @@
+@let x = preset().x;
+@let y = preset().y;
+<svg
+  class="scatter"
+  [attr.width]="width()"
+  [attr.height]="height"
+  role="group"
+  [attr.aria-label]="x.label + ' versus ' + y.label + ' for each lineup'"
+>
+  <g [attr.transform]="'translate(' + margin.left + ',' + margin.top + ')'">
+    @if (!hasPoints()) {
+      <text class="no-data" [attr.x]="plotWidth() / 2" [attr.y]="plotHeight / 2" text-anchor="middle">
+        No {{ lineups().length ? 'lineups have values for both of these axes' : 'lineups to plot' }}.
+      </text>
+    } @else {
+      <!-- Quadrant hints: better is always up and to the right. -->
+      <text class="quadrant" [attr.x]="plotWidth() - 8" y="14" text-anchor="end">
+        Better {{ x.label }} &amp; {{ y.label }}
+      </text>
+      <text class="quadrant" x="8" [attr.y]="plotHeight - 8">Worse {{ x.label }} &amp; {{ y.label }}</text>
+
+      @for (tick of yTicks(); track tick.value) {
+        <line class="grid" x1="0" [attr.x2]="plotWidth()" [attr.y1]="tick.position" [attr.y2]="tick.position" />
+        <text class="tick" x="-10" [attr.y]="tick.position + 4" text-anchor="end">{{ tick.label }}</text>
+      }
+      @for (tick of xTicks(); track tick.value) {
+        <line class="grid" [attr.x1]="tick.position" [attr.x2]="tick.position" y1="0" [attr.y2]="plotHeight" />
+        <text class="tick" [attr.x]="tick.position" [attr.y]="plotHeight + 18" text-anchor="middle">{{ tick.label }}</text>
+      }
+      <line class="axis" x1="0" [attr.x2]="plotWidth()" [attr.y1]="plotHeight" [attr.y2]="plotHeight" />
+
+      @if (leagueLines().x !== null) {
+        <line class="league" [attr.x1]="leagueLines().x" [attr.x2]="leagueLines().x" y1="0" [attr.y2]="plotHeight" />
+      }
+      @if (leagueLines().y !== null) {
+        <line class="league" x1="0" [attr.x2]="plotWidth()" [attr.y1]="leagueLines().y" [attr.y2]="leagueLines().y" />
+        <text class="league-label" [attr.x]="plotWidth() - 4" [attr.y]="leagueLines().y! - 6" text-anchor="end">
+          League average
+        </text>
+      }
+
+      <text class="axis-title" [attr.x]="plotWidth() / 2" [attr.y]="plotHeight + 42" text-anchor="middle">
+        {{ x.label }}{{ x.direction < 0 ? ' (lower is better)' : '' }} — better →
+      </text>
+      <text
+        class="axis-title"
+        [attr.transform]="'translate(-48,' + plotHeight / 2 + ') rotate(-90)'"
+        text-anchor="middle"
+      >
+        {{ y.label }}{{ y.direction < 0 ? ' (lower is better)' : '' }} — better →
+      </text>
+
+      @for (point of points(); track point.key) {
+        <circle
+          class="dot"
+          [class.selected]="selectedSet().has(point.key)"
+          [class.dimmed]="hoveredKey() !== null && hoveredKey() !== point.key"
+          [attr.cx]="point.cx"
+          [attr.cy]="point.cy"
+          [attr.r]="point.r"
+          [attr.fill]="point.color"
+        />
+      }
+
+      @for (label of labels(); track label.key) {
+        <text class="direct-label" [attr.x]="label.x" [attr.y]="label.y" [attr.text-anchor]="label.anchor">
+          {{ label.text }}
+        </text>
+      }
+
+      <!-- Hit targets are at least 24px so points are easy to hover, focus and click. -->
+      @for (point of points(); track point.key) {
+        <circle
+          class="hit"
+          [attr.cx]="point.cx"
+          [attr.cy]="point.cy"
+          [attr.r]="hitRadius(point)"
+          tabindex="0"
+          role="button"
+          [attr.aria-pressed]="selectedSet().has(point.key)"
+          [attr.aria-label]="pointLabel(point)"
+          (pointerenter)="hoveredKey.set(point.key)"
+          (pointerleave)="hoveredKey.set(null)"
+          (focus)="hoveredKey.set(point.key)"
+          (blur)="hoveredKey.set(null)"
+          (click)="toggleLineup.emit(point.key)"
+          (keydown.enter)="toggleLineup.emit(point.key)"
+          (keydown.space)="$event.preventDefault(); toggleLineup.emit(point.key)"
+        />
+      }
+    }
+  </g>
+</svg>
+
+@if (hovered(); as point) {
+  <div class="tooltip" [style]="tooltipStyle()" aria-hidden="true">
+    <div class="tooltip-values">
+      <span>
+        <strong>{{ formatMetric(point.x, x.format) }}</strong>
+        <span class="muted">{{ x.label }}</span>
+      </span>
+      <span>
+        <strong>{{ formatMetric(point.y, y.format) }}</strong>
+        <span class="muted">{{ y.label }}</span>
+      </span>
+      <span>
+        <strong>{{ formatMetric(point.lineup.net_rating, 'signed') }}</strong>
+        <span class="muted">Net</span>
+      </span>
+    </div>
+    <div class="tooltip-team">
+      <span class="swatch" [style.background]="point.color"></span>
+      {{ point.lineup.team_name }} · {{ point.lineup.total_possessions }} poss
+    </div>
+    <div class="tooltip-names">{{ lineupNames(point.lineup) }}</div>
+    <div class="muted small">{{ selectedSet().has(point.key) ? 'Click to remove from comparison' : 'Click to compare' }}</div>
+  </div>
+}
